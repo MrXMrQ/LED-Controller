@@ -12,14 +12,16 @@ interface Device {
 
 export default function Home() {
   const [data, setData] = useState<Device[]>([]);
-  const [isTableVisible, setIsTableVisible] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
     // Beim Laden der Seite überprüfen, ob Daten im Local Storage vorhanden sind
     const storedData = localStorage.getItem('devices');
     if (storedData) {
       setData(JSON.parse(storedData));
-      setIsTableVisible(true);
+      setIsDataLoaded(true);
+    } else {
+      setIsDataLoaded(false);
     }
   }, []);
 
@@ -31,7 +33,7 @@ export default function Home() {
       const newDevice: Device = { id: data.length + 1, name: name, ip: ip, status: 'Unknown' };
       const updatedData = [...data, newDevice];
       setData(updatedData);
-      setIsTableVisible(true);
+      setIsDataLoaded(true);
 
       // Speichern der Daten im Local Storage
       localStorage.setItem('devices', JSON.stringify(updatedData));
@@ -42,10 +44,6 @@ export default function Home() {
     const updatedData = data.filter((device) => device.id !== id);
     setData(updatedData);
 
-    if (updatedData.length === 0) {
-      setIsTableVisible(false);
-    }
-
     // Aktualisieren der Daten im Local Storage
     localStorage.setItem('devices', JSON.stringify(updatedData));
   };
@@ -54,7 +52,7 @@ export default function Home() {
     <div className="bg-pink-300 flex justify-center items-center">
       <SideBar />
       <div className="w-screen mx-10 overflow-x-auto">
-        {isTableVisible ? (
+        {isDataLoaded && data.length > 0 ? (
           <table className="w-full h-96 rounded-lg overflow-hidden shadow-xl">
             <thead>
               <tr className="bg-cyan-900">
