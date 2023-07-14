@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SideBar from "@/components/SideBar";
-import { FiTrash2 } from 'react-icons/fi';
+import { FiTrash2, FiRefreshCw } from 'react-icons/fi';
 import { IoMdAdd } from 'react-icons/io';
 
 interface Device {
@@ -28,17 +28,32 @@ export default function Home() {
   const addDevice = () => {
     const name = prompt("Enter device name:");
     const ip = prompt("Enter device IP address:");
-
+  
     if (name && ip) {
-      const newDevice: Device = { id: data.length + 1, name: name, ip: ip, status: 'Unknown' };
+      // Überprüfen, ob das Gerät bereits vorhanden ist
+      const isDeviceExist = data.some(device => device.name === name || device.ip === ip);
+      if (isDeviceExist) {
+        alert("Device with the same name or IP address already exists.");
+        return;
+      }
+  
+      // Überprüfen, ob die IP-Adresse im richtigen Format vorliegt
+      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (!ipPattern.test(ip)) {
+        alert("Invalid IP address format.");
+        return;
+      }
+  
+      const newDevice: Device = { id: data.length + 1, name: name, ip: ip, status: 'Offline' };
       const updatedData = [...data, newDevice];
       setData(updatedData);
       setIsDataLoaded(true);
-
+  
       // Speichern der Daten im Local Storage
       localStorage.setItem('devices', JSON.stringify(updatedData));
     }
   };
+  
 
   const removeDevice = (id: number) => {
     const updatedData = data.filter((device) => device.id !== id);
@@ -48,38 +63,72 @@ export default function Home() {
     localStorage.setItem('devices', JSON.stringify(updatedData));
   };
 
+  const sendRequest = (ip: string) => {
+    fetch(`http://${ip}`)
+      .then(response => {
+        if (response.ok) {
+          console.log('Request successful');
+          // Die Antwort ist erfolgreich (Statuscode 2xx)
+          // Setze den Status des Geräts auf "Online"
+          const updatedData = data.map(device => {
+            if (device.ip === ip) {
+              return { ...device, status: 'Online' };
+            }
+            return device;
+          });
+          setData(updatedData);
+          localStorage.setItem('devices', JSON.stringify(updatedData));
+        } else {
+          console.log('Request failed');
+          // Die Antwort ist nicht erfolgreich (Statuscode nicht 2xx)
+        }
+      })
+      .catch(error => {
+        console.log('Error occurred during request:', error);
+        // Ein Fehler ist aufgetreten
+      });
+  };
+  
+
   return (
     <div className="bg-pink-300 flex justify-center items-center">
       <SideBar />
       <div className="w-screen mx-10 overflow-x-auto">
         {isDataLoaded && data.length > 0 ? (
-          <table className="w-full h-96 rounded-lg overflow-hidden shadow-xl">
+          <table className="w-full h-60 rounded-lg overflow-hidden shadow-xl">
             <thead>
               <tr className="bg-cyan-900">
-                <th className="text-left text-lg px-4 py-2">Name</th>
-                <th className="text-left text-lg px-4 py-2">IP</th>
-                <th className="text-left text-lg px-4 py-2">Status</th>
-                <th className="text-center text-lg px-4 py-2">Indicator</th>
-                <th className="text-center text-lg px-4 py-2">Actions</th>
+                <th className="text-left text-2xl px-4 py-2">Name</th>
+                <th className="text-left text-2xl px-4 py-2">IP</th>
+                <th className="text-left text-2xl px-4 py-2">Status</th>
+                <th className="text-center text-2xl px-4 py-2">Indicator</th>
+                <th className="text-center text-2xl px-4 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
               {data.map((item, index) => (
                 <tr key={item.id} className={index % 2 === 0 ? 'bg-cyan-800' : 'bg-cyan-900'}>
-                  <td className="text-left text-lg px-4 py-2">{item.name}</td>
-                  <td className="text-left text-lg px-4 py-2">{item.ip}</td>
-                  <td className="text-left text-lg px-4 py-2">{item.status}</td>
+                  <td className="text-left text-2xl px-4 py-2">{item.name}</td>
+                  <td className="text-left text-2xl px-4 py-2">{item.ip}</td>
+                  <td className="text-left text-2xl px-4 py-2">{item.status}</td>
                   <td className="text-center">
                     <span className={`inline-block w-4 h-4 rounded-full ${item.status === 'Online' ? 'bg-green-500' : 'bg-red-500'}`}></span>
                   </td>
                   <td className="text-center">
-                    <div className="flex items-center justify-center">
-                      <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => removeDevice(item.id)}>
+                    <div className="flex items-center justify-center gap-x-5">
+                      <button className="flex-shrink-0 w-auto h-auto bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded" onClick={() => removeDevice(item.id)}>
                         <div className="flex flex-col items-center">
                           <FiTrash2 size={20} className="mb-1" />
-                          Remove
+                          remove
                         </div>
                       </button>
+                      <button className="flex-shrink-0 w-auto h-auto bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded" onClick={() => sendRequest(item.ip)}>
+                        <div className="flex flex-col items-center">
+                          <FiRefreshCw size={20} className="mb-1" />
+                          update
+                        </div>
+                      </button>
+
                     </div>
                   </td>
                 </tr>
