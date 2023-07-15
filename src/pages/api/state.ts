@@ -23,7 +23,7 @@ export default async function handler(
         }, 100); // 1000 milliseconds = 1 seconds
       });
 
-      const responsePromise = axios.get<Data>(`http://${ip}`);
+      const responsePromise = axios.get<Data>(`http://${ip}/get`);
 
       const response = await Promise.race([responsePromise, timeoutPromise]);
 

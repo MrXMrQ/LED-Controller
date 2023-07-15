@@ -73,7 +73,7 @@ export default function Home() {
     try {
       const device = data.find(device => device.id === id);
       if (device) {
-        const response = await axios.get(`/api/send?ip=${device.ip}`);
+        const response = await axios.get(`/api/state?ip=${device.ip}`);
         const responseData = response.data;
 
         const updatedDevice: Device = {
