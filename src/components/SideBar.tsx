@@ -3,7 +3,6 @@ import { TbDeviceDesktopCheck } from 'react-icons/tb';
 import { FiMenu } from 'react-icons/fi';
 import { BiColor } from 'react-icons/bi';
 import { BsArrowLeft } from 'react-icons/bs';
-import { CgProfile } from 'react-icons/cg';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -50,14 +49,6 @@ const SideBar = () => {
           <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
             <BiColor size={50} />
             {showText && <span className="ml-4 text- font-bold">LED Controller</span>}
-          </div>
-        </button>
-      </Link>
-      <Link href="/profiles">
-        <button className={`flex items-center hover:bg-blue-500 text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
-          <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
-            <CgProfile size={50} />
-            {showText && <span className="ml-4 text- font-bold">Profiles</span>}
           </div>
         </button>
       </Link>

@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import SideBar from "@/components/SideBar";
 
 export default function Home() {
-  return (
+return (
     <div className="flex bg-pink-300">
-        <SideBar />
+      <SideBar />
     </div>
   );
 }
