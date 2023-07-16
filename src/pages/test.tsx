@@ -1,22 +1,12 @@
-import React, { useState } from 'react';
+import Button from "@/components/Button";
 
-const Button = () => {
-  // Zustand, um zu verfolgen, ob der Button geklickt wurde
-  const [isClicked, setIsClicked] = useState(false);
-
-  // Funktion, die aufgerufen wird, wenn der Button geklickt wird
-  const handleClick = () => {
-    setIsClicked(!isClicked); // Toggle den Zustand
-  };
-
+const Home = () => {
   return (
-    <button
-      onClick={handleClick}
-      style={{ backgroundColor: isClicked ? 'yellow' : 'blue' }}
-    >
-      Klick mich!
-    </button>
+    <div>
+      <Button></Button>
+      
+    </div>
   );
 };
 
-export default Button;
+export default Home;
