@@ -115,15 +115,14 @@ export default function Home() {
                   <td className="text-left text-2xl px-4 py-2">{item.status}</td>
                   <td className="text-center">
                     <span
-                      className={`inline-block w-4 h-4 rounded-full ${
-                        item.status === 'Online' ? 'bg-green-500' : 'bg-red-500'
-                      }`}
+                      className={`inline-block w-4 h-4 rounded-full ${item.status === 'Online' ? 'bg-green-500' : 'bg-red-500'
+                        }`}
                     ></span>
                   </td>
                   <td className="text-center">
                     <div className="flex items-center justify-center gap-x-5">
                       <button
-                        className="flex-shrink-0 w-auto h-auto bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
+                        className="flex-shrink-0 w-auto h-auto bg-red-500 hover:bg-red-700 transition-colors text-white font-bold py-2 px-2 rounded"
                         onClick={() => removeDevice(item.id)}
                       >
                         <div className="flex flex-col items-center">
@@ -132,7 +131,7 @@ export default function Home() {
                         </div>
                       </button>
                       <button
-                        className="flex-shrink-0 w-auto h-auto bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded"
+                        className="flex-shrink-0 w-auto h-auto bg-green-500 hover:bg-green-700 transition-colors text-white font-bold py-2 px-2 rounded"
                         onClick={() => updateDeviceStatus(item.id)}
                       >
                         <div className="flex flex-col items-center">
@@ -150,10 +149,7 @@ export default function Home() {
           <p className="flex justify-center text-2xl">No devices added yet.</p>
         )}
         <div className="flex justify-center mt-4">
-          <button
-            className="flex items-center justify-center bg-purple-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
-            onClick={addDevice}
-          >
+          <button className="flex items-center justify-center bg-purple-700 hover:bg-blue-500 transition-colors text-white font-bold py-2 px-4 rounded" onClick={addDevice}>
             <IoMdAdd size={20} className="mr-2" />
             Add Device
           </button>

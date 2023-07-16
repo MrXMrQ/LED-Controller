@@ -30,14 +30,14 @@ const SideBar = () => {
 
   return (
     <div className={`bg-purple-700  h-screen ${isExpanded ? 'w-64' : 'w-20'} drop-shadow-2xl rounded-r-lg flex flex-col transition-all`}>
-      <button className={`flex items-center hover:bg-blue-500 text-white font-bold py-7 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'rounded-r-lg' : ''}`} onClick={handleButtonClick}>
+      <button className={`flex items-center hover:bg-blue-500 transition-colors text-white font-bold py-7 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'rounded-r-lg' : ''}`} onClick={handleButtonClick}>
         <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
           <FiMenu size={50} />
           {showText && <span className="ml-4 text- font-bold">Menu</span>}
         </div>
       </button>
       <Link href="/devices">
-        <button className={`flex items-center hover:bg-blue-500 text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
+        <button className={`flex items-center hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
           <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
             <TbDeviceDesktopCheck size={50} />
             {showText && <span className="ml-4 text- font-bold">Connected Devices</span>}
@@ -45,14 +45,14 @@ const SideBar = () => {
         </button>
       </Link>
       <Link href="/led-controll">
-        <button className={`flex items-center hover:bg-blue-500 text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
+        <button className={`flex items-center hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
           <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
             <BiColor size={50} />
             {showText && <span className="ml-4 text- font-bold">LED Controller</span>}
           </div>
         </button>
       </Link>
-      <button className="flex items-center mt-auto hover:bg-blue-500 text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105" onClick={handleExitClick}>
+      <button className="flex items-center mt-auto hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105" onClick={handleExitClick}>
         <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
           <BsArrowLeft size={50} />
           {showText && <span className="ml-4 text- font-bold">Back</span>}
