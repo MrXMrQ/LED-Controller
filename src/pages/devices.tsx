@@ -69,7 +69,6 @@ export default function Home() {
 
   // update device status
   const updateDeviceStatus = async (id: number) => {
-    console.log("Click")
     try {
       const device = data.find(device => device.id === id);
       if (device) {
