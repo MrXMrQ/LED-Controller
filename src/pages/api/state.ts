@@ -20,7 +20,7 @@ export default async function handler(
       const timeoutPromise = new Promise<Data>((_, reject) => {
         setTimeout(() => {
           reject({ error: 'Request timed out' });
-        }, 100); // 1000 milliseconds = 1 seconds
+        }, 100); // 100 milliseconds = 1 seconds
       });
 
       const responsePromise = axios.get<Data>(`http://${ip}/get`);

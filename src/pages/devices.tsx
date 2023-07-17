@@ -28,7 +28,6 @@ export default function Home() {
     }
   }, []);
 
-  // add device
   const addDevice = () => {
     const name = prompt('Enter device name:');
     const ip = prompt('Enter device IP address:');
@@ -58,7 +57,6 @@ export default function Home() {
     }
   };
 
-  // remove device
   const removeDevice = (id: number) => {
     const updatedData = data.filter(device => device.id !== id);
     setData(updatedData);
@@ -67,7 +65,6 @@ export default function Home() {
     localStorage.setItem('devices', JSON.stringify(updatedData));
   };
 
-  // update device status
   const updateDeviceStatus = async (id: number) => {
     try {
       const device = data.find(device => device.id === id);

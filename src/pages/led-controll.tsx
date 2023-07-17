@@ -11,7 +11,6 @@ interface Device {
   name: string;
   ip: string;
   status: string;
-  // Weitere Attribute, die Ihr Geräte-Objekt haben könnte
 }
 
 interface ledData {
@@ -26,7 +25,7 @@ export default function Home() {
   const [selectedDeviceIp, setSelectedDeviceIp] = useState<string>('');
   const [keyword, setKeyword] = useState('');
   const [buttonColor, setButtonColor] = useState('');
-  const [brightness, setBrightness] = useState<number>(50); // Zustand für die Helligkeit
+  const [brightness, setBrightness] = useState<number>(50);
   const [rgbValue, setrgbValues] = useState('')
 
   const getButtonColorFromClass = (classNames: string) => {
@@ -42,16 +41,13 @@ export default function Home() {
     const elem = document.createElement("div");
     elem.className = classNames;
 
-    // Append the element to the document to apply styles and get computed color
     document.body.appendChild(elem);
 
-    // Get the computed background color of the element
     const bgColor = window.getComputedStyle(elem).backgroundColor;
 
-    // Remove the element after extracting the color
     document.body.removeChild(elem);
 
-    // Convert the background color to RGB format
+    //Convert
     const rgbValues = bgColor
       .slice(4, -1)
       .split(",")
@@ -67,7 +63,7 @@ export default function Home() {
         selectedBrightness: brightness,
         keyword: keyword,
         rgbValues: rgbValue
-      };
+      }
       fetch('/api/postData', {
         method: 'POST',
         headers: {
@@ -75,24 +71,17 @@ export default function Home() {
         },
         body: JSON.stringify(data)
       })
-        .then(response => {
-          if (response.ok) {
-            console.log('Daten wurden erfolgreich an das Backend gesendet!');
-          } else {
-            console.error('Fehler beim Senden der Daten an das Backend.');
-          }
-        })
-        .catch(error => {
-          console.error('Fehler beim Senden der Daten:', error);
-        });
+      .catch(error => {
+        console.error('Fehler beim Senden der Daten:', error);
+      })
     }
   }
 
   const handleLoadData = () => {
-    const dataFromLocalStorage = localStorage.getItem('devices'); // Daten aus dem Local Storage abrufen
+    const dataFromLocalStorage = localStorage.getItem('devices');
     if (dataFromLocalStorage) {
-      const parsedData = JSON.parse(dataFromLocalStorage); // JSON-Daten in JavaScript-Objekte umwandeln
-      setDevices(parsedData); // Daten in den Zustand setzen
+      const parsedData = JSON.parse(dataFromLocalStorage);
+      setDevices(parsedData);
     } else {
       setDevices([]);
     }
@@ -103,7 +92,7 @@ export default function Home() {
   }
 
   const handleBrightnessChange = (value: number) => {
-    setBrightness(value); // Aktualisiere den Wert der Helligkeit, wenn sich der Wert der Slidebar ändert
+    setBrightness(value);
   }
 
   return (

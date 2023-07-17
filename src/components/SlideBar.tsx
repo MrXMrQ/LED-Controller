@@ -4,7 +4,7 @@ interface SliderProps {
   minValue: number;
   maxValue: number;
   step: number;
-  value: number; // Prop für den Wert der Slidebar hinzufügen
+  value: number;
   onChange: (value: number) => void;
 }
 
