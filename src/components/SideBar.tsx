@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { TbDeviceDesktopCheck } from 'react-icons/tb';
+import Link from 'next/link';
 import { FiMenu } from 'react-icons/fi';
 import { BiColor } from 'react-icons/bi';
+import { PiEyedropperSample } from 'react-icons/pi';
 import { BsArrowLeft } from 'react-icons/bs';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+
 
 const SideBar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -44,10 +46,18 @@ const SideBar = () => {
           </div>
         </button>
       </Link>
-      <Link href="/led-controll">
+      <Link href="/led-controller">
         <button className={`flex items-center hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
           <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
             <BiColor size={50} />
+            {showText && <span className="ml-4 text- font-bold">LED Controller</span>}
+          </div>
+        </button>
+      </Link>
+      <Link href="/led-templates">
+        <button className={`flex items-center hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105 ${isExpanded ? 'md:w-64' : 'md:w-20'}`}>
+          <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
+            <PiEyedropperSample size={50} />
             {showText && <span className="ml-4 text- font-bold">LED Controller</span>}
           </div>
         </button>

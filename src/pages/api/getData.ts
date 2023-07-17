@@ -8,7 +8,7 @@ type Data = {
 type ErrorData = {
   error: string;
 };
-
+//finde ich absoulut schrecklich aber es funktioniert, never change a running system 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data | ErrorData>
@@ -20,7 +20,7 @@ export default async function handler(
       const timeoutPromise = new Promise<Data>((_, reject) => {
         setTimeout(() => {
           reject({ error: 'Request timed out' });
-        }, 100); // 100 milliseconds = 1 seconds
+        }, 300); // 100 milliseconds = 1 seconds
       });
 
       const responsePromise = axios.get<Data>(`http://${ip}/get`);

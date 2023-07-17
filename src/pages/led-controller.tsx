@@ -4,7 +4,6 @@ import Slidebar from '@/components/SlideBar';
 import { BsLightbulb, BsDeviceSsd } from 'react-icons/bs';
 import { BiSend } from 'react-icons/bi';
 import React, { useState } from 'react';
-import { getRandomValues } from 'crypto';
 
 interface Device {
   id: number;
@@ -23,6 +22,7 @@ interface ledData {
 export default function Home() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDeviceIp, setSelectedDeviceIp] = useState<string>('');
+  const [status, setStatus] = useState<string>('Offline');
   const [keyword, setKeyword] = useState('');
   const [buttonColor, setButtonColor] = useState('');
   const [brightness, setBrightness] = useState<number>(50);
@@ -57,7 +57,7 @@ export default function Home() {
   }
 
   const handleSendButton = () => {
-    if (selectedDeviceIp !== '' && buttonColor !== '') {
+    if (selectedDeviceIp !== '' && buttonColor !== '' && status === 'Online') {
       const data: ledData = {
         selectedIP: selectedDeviceIp,
         selectedBrightness: brightness,
@@ -71,9 +71,9 @@ export default function Home() {
         },
         body: JSON.stringify(data)
       })
-      .catch(error => {
-        console.error('Fehler beim Senden der Daten:', error);
-      })
+        .catch(error => {
+          console.error('Fehler beim Senden der Daten:', error);
+        })
     }
   }
 
@@ -87,8 +87,13 @@ export default function Home() {
     }
   }
 
-  const handleSelectDevice = (ip: string) => {
+  const handleSelectDevice = (ip: string, status: string) => {
     setSelectedDeviceIp(ip);
+    if (status === 'Online') {
+      setStatus('Online')
+    } else {
+      setStatus('Offline')
+    }
   }
 
   const handleBrightnessChange = (value: number) => {
@@ -140,41 +145,41 @@ export default function Home() {
             <Slidebar minValue={0} maxValue={100} step={1} value={brightness} onChange={handleBrightnessChange} />
           </div>
         </div>
-        <div className='bg-cyan-900 w-1/5 h-1/2 rounded-3xl shadow-2xl flex flex-col justify-center items-center gap-y-28 px-6 py-6'>
-          <div className='bg-cyan-800 w-full h-20 flex items-center justify-center text-center text-3xl rounded-lg shadow-2xl'>
+        <div className='bg-cyan-900 w-1/5 h-1/2 rounded-3xl shadow-2xl flex flex-col'>
+          <div className='bg-cyan-800 w-full h-20 flex items-center justify-center text-center text-3xl rounded-3xl shadow-2xl'>
             Device/Launch
           </div>
-          <button className='bg-cyan-800 w-full h-20 rounded-lg shadow-2xl flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={handleLoadData}>
-            Select
-            <BsDeviceSsd className='ml-5' />
-          </button>
-          {devices.length > 0 && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 text-white text-xl">
-              <div className="bg-cyan-800 p-4 rounded-3xl shadow-lg">
-                <h2 className="text-2xl font-bold mb-4">Geladene Daten:</h2>
-                {devices.map((device) => (
-                  <div key={device.id} className="flex items-center justify-between mb-2">
-                    <p>{device.name}</p>
-                    <button className="bg-cyan-900 hover:bg-blue-500 text-white font-bold py-2 px-4 mt-3 rounded-lg shadow-2xl" onClick={() => handleSelectDevice(device.ip)}>
-                      IP auswählen
-                    </button>
-                  </div>
-                ))}
-                {selectedDeviceIp && (
+          <div className='bg-cyan-800 w-full h-4/6 flex flex-col px-6 py-16 gap-y-9 mt-20 rounded-3xl shadow-2xl'>
+            <button className='bg-cyan-900 w-full h-20 rounded-lg shadow-lg flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={handleLoadData}>
+              Select
+              <BsDeviceSsd className='ml-5' />
+            </button>
+            {devices.length > 0 && (
+              <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 text-white text-xl">
+                <div className="bg-cyan-800 p-4 rounded-3xl shadow-lg">
+                  <h2 className="text-2xl font-bold mb-4">Geladene Daten:</h2>
+                  {devices.map((device) => (
+                    <div key={device.id} className="flex items-center justify-between mb-2">
+                      <p>{device.name}</p>
+                      <button className="bg-cyan-900 hover:bg-blue-500 text-white font-bold py-2 px-4 mt-3 rounded-lg shadow-2xl mx-5" onClick={() => handleSelectDevice(device.ip, device.status)}>
+                        IP auswählen
+                      </button>
+                    </div>
+                  ))}
                   <p className="mt-4">IP-Adresse: {selectedDeviceIp}</p>
-                )}
-                <button onClick={() => setDevices([])} className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                  Schließen
-                </button>
+                  <button onClick={() => setDevices([])} className="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl">
+                    Schließen
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-          <button className='bg-cyan-800 w-full h-20 rounded-lg shadow-2xl flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={handleSendButton}>
-            Send
-            <BiSend className='ml-5' />
-          </button>
+            )}
+            <button className='bg-cyan-900 w-full h-20 rounded-lg shadow-lg flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={handleSendButton}>
+              Send
+              <BiSend className='ml-5' />
+            </button>
+          </div>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   )
 }

@@ -21,6 +21,9 @@ const Slidebar: React.FC<SliderProps> = ({ minValue, maxValue, step, value, onCh
           Brightness
         </div>
         <div className="flex col items-center my-4">
+          <p className='mx-4 text-xl'>
+            Off
+          </p>
           <input
             type="range"
             min={minValue}
