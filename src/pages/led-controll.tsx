@@ -4,6 +4,7 @@ import Slidebar from '@/components/SlideBar';
 import { BsLightbulb, BsDeviceSsd } from 'react-icons/bs';
 import { BiSend } from 'react-icons/bi';
 import React, { useState } from 'react';
+import { getRandomValues } from 'crypto';
 
 interface Device {
   id: number;
@@ -13,11 +14,20 @@ interface Device {
   // Weitere Attribute, die Ihr Geräte-Objekt haben könnte
 }
 
+interface ledData {
+  selectedIP: string
+  selectedBrightness: number
+  keyword: string
+  rgbValues: string
+}
+
 export default function Home() {
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDeviceIp, setSelectedDeviceIp] = useState('');
+  const [selectedDeviceIp, setSelectedDeviceIp] = useState<string>('');
+  const [keyword, setKeyword] = useState('');
   const [buttonColor, setButtonColor] = useState('');
   const [brightness, setBrightness] = useState<number>(50); // Zustand für die Helligkeit
+  const [rgbValue, setrgbValues] = useState('')
 
   const getButtonColorFromClass = (classNames: string) => {
     // Klassennamen aufteilen und den Teil mit 'bg-' finden
@@ -26,14 +36,55 @@ export default function Home() {
     if (bgClass) {
       const color = bgClass.slice(3); // Entferne 'bg-' vom Anfang der Farbe
       setButtonColor(color)
+      setKeyword('normal')
     }
+
+    const elem = document.createElement("div");
+    elem.className = classNames;
+
+    // Append the element to the document to apply styles and get computed color
+    document.body.appendChild(elem);
+
+    // Get the computed background color of the element
+    const bgColor = window.getComputedStyle(elem).backgroundColor;
+
+    // Remove the element after extracting the color
+    document.body.removeChild(elem);
+
+    // Convert the background color to RGB format
+    const rgbValues = bgColor
+      .slice(4, -1)
+      .split(",")
+      .map((val) => parseInt(val.trim(), 10));
+
+    setrgbValues(rgbValues.toString())
   }
 
   const handleSendButton = () => {
     if (selectedDeviceIp !== '' && buttonColor !== '') {
-      console.log(selectedDeviceIp)
-      console.log(buttonColor)
-      console.log(brightness * 2.55)
+      const data: ledData = {
+        selectedIP: selectedDeviceIp,
+        selectedBrightness: brightness,
+        keyword: keyword,
+        rgbValues: rgbValue
+      };
+      fetch('/api/postData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('Daten wurden erfolgreich an das Backend gesendet!');
+          } else {
+            console.error('Fehler beim Senden der Daten an das Backend.');
+          }
+        })
+        .catch(error => {
+          console.error('Fehler beim Senden der Daten:', error);
+        });
     }
   }
 
