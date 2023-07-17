@@ -1,9 +1,9 @@
 import SideBar from '@/components/SideBar';
+import Button from '@/components/Button';
+import Slidebar from '@/components/SlideBar';
 import { BsLightbulb, BsDeviceSsd } from 'react-icons/bs';
 import { BiSend } from 'react-icons/bi';
 import React, { useState } from 'react';
-import { ColorResult } from 'react-color';
-import Button from '@/components/Button';
 
 interface Device {
   id: number;
@@ -14,20 +14,28 @@ interface Device {
 }
 
 export default function Home() {
-  const [isColorChooserOpen, setColorChooserOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState('#ffffff');
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDeviceIp, setSelectedDeviceIp] = useState('');
+  const [buttonColor, setButtonColor] = useState('');
+  const [brightness, setBrightness] = useState<number>(50); // Zustand für die Helligkeit
 
-  const handleButtonClick = () => {
-    // Add your click handler logic here
-    console.log("Button clicked");
-    const button = document.querySelector('button');
-  };
+  const getButtonColorFromClass = (classNames: string) => {
+    // Klassennamen aufteilen und den Teil mit 'bg-' finden
+    const bgClass = classNames.split(' ').find((className) => className.startsWith('bg-'));
+    // Wenn die Hintergrundfarbe (bgClass) gefunden wurde, dann nur die Farbe extrahieren
+    if (bgClass) {
+      const color = bgClass.slice(3); // Entferne 'bg-' vom Anfang der Farbe
+      setButtonColor(color)
+    }
+  }
 
   const handleSendButton = () => {
-    console.log(selectedDeviceIp)
-  };
+    if (selectedDeviceIp !== '' && buttonColor !== '') {
+      console.log(selectedDeviceIp)
+      console.log(buttonColor)
+      console.log(brightness * 2.55)
+    }
+  }
 
   const handleLoadData = () => {
     const dataFromLocalStorage = localStorage.getItem('devices'); // Daten aus dem Local Storage abrufen
@@ -37,11 +45,15 @@ export default function Home() {
     } else {
       setDevices([]);
     }
-  };
+  }
 
   const handleSelectDevice = (ip: string) => {
     setSelectedDeviceIp(ip);
-  };
+  }
+
+  const handleBrightnessChange = (value: number) => {
+    setBrightness(value); // Aktualisiere den Wert der Helligkeit, wenn sich der Wert der Slidebar ändert
+  }
 
   return (
     <div className='bg-pink-300 flex'>
@@ -49,41 +61,44 @@ export default function Home() {
       <div className='flex justify-center items-center w-screen h-screen gap-20'>
         <div className='bg-cyan-900 w-4/6 h-1/2 rounded-3xl grid grid-cols-6 place-items-center shadow-2xl'>
           <div>
-            <button className='relative bg-yellow-400 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={handleButtonClick}>
+            <button className='relative bg-yellow-400 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-green-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={handleButtonClick}>
+            <button className='relative bg-green-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-red-600 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={handleButtonClick}>
+            <button className='relative bg-red-600 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-pink-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700 ' onClick={handleButtonClick}>
+            <button className='relative bg-pink-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700 ' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-purple-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={handleButtonClick}>
+            <button className='relative bg-purple-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <Button />
+          <div className='col-span-6 w-4/6'>
+            <Slidebar minValue={0} maxValue={100} step={1} value={brightness} onChange={handleBrightnessChange} />
+          </div>
         </div>
         <div className='bg-cyan-900 w-1/5 h-1/2 rounded-3xl shadow-2xl flex flex-col justify-center items-center gap-y-28 px-6 py-6'>
           <div className='bg-cyan-800 w-full h-20 flex items-center justify-center text-center text-3xl rounded-lg shadow-2xl'>

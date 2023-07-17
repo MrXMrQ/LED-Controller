@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChromePicker, ColorResult } from 'react-color';
-import { BsLightbulb, BsPencil } from 'react-icons/bs';
+import { BsPencil } from 'react-icons/bs';
 
 
 const Button = () => {

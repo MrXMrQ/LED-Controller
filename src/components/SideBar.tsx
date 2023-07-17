@@ -52,7 +52,7 @@ const SideBar = () => {
           </div>
         </button>
       </Link>
-      <button className="flex items-center mt-auto hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform hover:scale-105" onClick={handleExitClick}>
+      <button className="flex items-center mt-auto hover:bg-blue-500 transition-colors text-white font-bold py-5 px-1 rounded-r-lg transform" onClick={handleExitClick}>
         <div className={`flex items-center transition-all ${isExpanded ? '-ml-2' : ''}`} style={{ position: 'relative', left: 10, overflow: 'visible' }}>
           <BsArrowLeft size={50} />
           {showText && <span className="ml-4 text- font-bold">Back</span>}
