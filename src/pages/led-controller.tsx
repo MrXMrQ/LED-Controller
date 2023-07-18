@@ -23,9 +23,10 @@ export default function Home() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDeviceIp, setSelectedDeviceIp] = useState<string>('');
   const [status, setStatus] = useState<string>('Offline');
+  const [selectedColor, setSelectedColor] = useState('#ffffff');
   const [keyword, setKeyword] = useState('');
   const [buttonColor, setButtonColor] = useState('');
-  const [brightness, setBrightness] = useState<number>(50);
+  const [brightness, setBrightness] = useState<number>(20);
   const [rgbValue, setrgbValues] = useState('')
 
   const getButtonColorFromClass = (classNames: string) => {
@@ -57,12 +58,15 @@ export default function Home() {
   }
 
   const handleSendButton = () => {
-    if (selectedDeviceIp !== '' && buttonColor !== '' && status === 'Online') {
+    if (selectedDeviceIp !== '' && status === 'Online') {
       const data: ledData = {
         selectedIP: selectedDeviceIp,
         selectedBrightness: brightness,
         keyword: keyword,
         rgbValues: rgbValue
+      }
+      if(buttonColor === '') {
+        data.rgbValues = hexToRGB(selectedColor)
       }
       fetch('/api/postData', {
         method: 'POST',
@@ -75,7 +79,21 @@ export default function Home() {
           console.error('Fehler beim Senden der Daten:', error);
         })
     }
+    setButtonColor('')
   }
+
+  const hexToRGB = (selectedColor: string) => {
+    // Entferne das '#'-Zeichen, falls es vorhanden ist
+    selectedColor = selectedColor.replace('#', '');
+  
+    // Teile die Hexadezimalzahl in ihre Rot-, Grün- und Blaukomponenten auf
+    const red = parseInt(selectedColor.substring(0, 2), 16);
+    const green = parseInt(selectedColor.substring(2, 4), 16);
+    const blue = parseInt(selectedColor.substring(4, 6), 16);
+  
+    // Gib die RGB-Werte als Objekt zurück
+    return `${red},${green},${blue}`;
+  };
 
   const handleLoadData = () => {
     const dataFromLocalStorage = localStorage.getItem('devices');
@@ -106,28 +124,28 @@ export default function Home() {
       <div className='flex justify-center items-center w-screen h-screen gap-20'>
         <div className='bg-cyan-900 w-4/6 h-1/2 rounded-3xl grid grid-cols-6 place-items-center shadow-2xl'>
           <div>
-            <button className='relative bg-yellow-400 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
+            <button className='relative bg-purple-600 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-green-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
+            <button className='relative bg-sky-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-red-600 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
+            <button className='relative bg-pink-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
             </button>
           </div>
           <div>
-            <button className='relative bg-pink-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700 ' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
+            <button className='relative bg-red-600 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700 ' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
@@ -140,7 +158,7 @@ export default function Home() {
               </div>
             </button>
           </div>
-          <Button />
+          <Button selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
           <div className='col-span-6 w-4/6'>
             <Slidebar minValue={0} maxValue={100} step={1} value={brightness} onChange={handleBrightnessChange} />
           </div>
