@@ -5,7 +5,9 @@ interface ledData {
     selectedIP: string;
     selectedBrightness: number;
     keyword: string;
-    rgbValues: string;
+    red: number
+    green: number
+    blue: number
 }
 
 export default function handler(

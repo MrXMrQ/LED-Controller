@@ -16,7 +16,9 @@ interface ledData {
   selectedIP: string
   selectedBrightness: number
   keyword: string
-  rgbValues: string
+  red: number
+  green: number
+  blue: number
 }
 
 export default function Home() {
@@ -27,7 +29,9 @@ export default function Home() {
   const [keyword, setKeyword] = useState('');
   const [buttonColor, setButtonColor] = useState('');
   const [brightness, setBrightness] = useState<number>(20);
-  const [rgbValue, setrgbValues] = useState('')
+  const [red, setRed] = useState<number>(0);
+  const [green, setGreen] = useState<number>(0);
+  const [blue, setBlue] = useState<number>(0);
 
   const getButtonColorFromClass = (classNames: string) => {
     // Klassennamen aufteilen und den Teil mit 'bg-' finden
@@ -54,7 +58,11 @@ export default function Home() {
       .split(",")
       .map((val) => parseInt(val.trim(), 10));
 
-    setrgbValues(rgbValues.toString())
+    setRed(rgbValues[0])
+    setGreen(rgbValues[1])
+    setBlue(rgbValues[2])
+
+    return rgbValues
   }
 
   const handleSendButton = () => {
@@ -63,11 +71,14 @@ export default function Home() {
         selectedIP: selectedDeviceIp,
         selectedBrightness: brightness,
         keyword: keyword,
-        rgbValues: rgbValue
+        red: red,
+        green: green,
+        blue: blue,
       }
       if(buttonColor === '') {
-        data.rgbValues = hexToRGB(selectedColor)
+        hexToRGB(selectedColor, data)
       }
+      console.log(data)
       fetch('/api/postData', {
         method: 'POST',
         headers: {
@@ -82,18 +93,26 @@ export default function Home() {
     setButtonColor('')
   }
 
-  const hexToRGB = (selectedColor: string) => {
+  const hexToRGB = (selectedColor: string, data: ledData) => {
     // Entferne das '#'-Zeichen, falls es vorhanden ist
     selectedColor = selectedColor.replace('#', '');
-  
+    
     // Teile die Hexadezimalzahl in ihre Rot-, Grün- und Blaukomponenten auf
     const red = parseInt(selectedColor.substring(0, 2), 16);
     const green = parseInt(selectedColor.substring(2, 4), 16);
     const blue = parseInt(selectedColor.substring(4, 6), 16);
   
     // Gib die RGB-Werte als Objekt zurück
-    return `${red},${green},${blue}`;
-  };
+    setRed(red)
+    setGreen(green)
+    setBlue(blue)
+    setKeyword('normal')
+    
+    data.keyword = 'normal'
+    data.red = red
+    data.green = green
+    data.blue = blue
+  }
 
   const handleLoadData = () => {
     const dataFromLocalStorage = localStorage.getItem('devices');
