@@ -26,9 +26,9 @@ export default function Home() {
   const [selectedDeviceIp, setSelectedDeviceIp] = useState<string>('');
   const [status, setStatus] = useState<string>('Offline');
   const [selectedColor, setSelectedColor] = useState('#ffffff');
-  const [keyword, setKeyword] = useState('');
   const [buttonColor, setButtonColor] = useState('');
   const [brightness, setBrightness] = useState<number>(20);
+  const [keyword, setKeyword] = useState('');
   const [red, setRed] = useState<number>(0);
   const [green, setGreen] = useState<number>(0);
   const [blue, setBlue] = useState<number>(0);
@@ -61,11 +61,10 @@ export default function Home() {
     setRed(rgbValues[0])
     setGreen(rgbValues[1])
     setBlue(rgbValues[2])
-
-    return rgbValues
   }
 
-  const handleSendButton = () => {
+  // send data to NodeMcu
+  const sendData = () => {
     if (selectedDeviceIp !== '' && status === 'Online') {
       const data: ledData = {
         selectedIP: selectedDeviceIp,
@@ -75,7 +74,7 @@ export default function Home() {
         green: green,
         blue: blue,
       }
-      if(buttonColor === '') {
+      if (buttonColor === '') {
         hexToRGB(selectedColor, data)
       }
       fetch('/api/postData', {
@@ -88,32 +87,42 @@ export default function Home() {
         .catch(error => {
           console.error('Fehler beim Senden der Daten:', error);
         })
+      setButtonColor('')
     }
-    setButtonColor('')
   }
 
   const hexToRGB = (selectedColor: string, data: ledData) => {
     // Entferne das '#'-Zeichen, falls es vorhanden ist
     selectedColor = selectedColor.replace('#', '');
-    
+
     // Teile die Hexadezimalzahl in ihre Rot-, Grün- und Blaukomponenten auf
     const red = parseInt(selectedColor.substring(0, 2), 16);
     const green = parseInt(selectedColor.substring(2, 4), 16);
     const blue = parseInt(selectedColor.substring(4, 6), 16);
-  
-    // Gib die RGB-Werte als Objekt zurück
+
+    // set RGB werte
     setRed(red)
     setGreen(green)
     setBlue(blue)
     setKeyword('normal')
-    
-    data.keyword = 'normal'
+
+    data.keyword = keyword
     data.red = red
     data.green = green
     data.blue = blue
   }
 
-  const handleLoadData = () => {
+  const handleSelectDevice = (ip: string, status: string) => {
+    setSelectedDeviceIp(ip)
+    if (status === 'Online') {
+      setStatus('Online')
+    } else {
+      setStatus('Offline')
+    }
+  }
+
+  //load data for Select Button
+  const loadSelectButtonDataSet = () => {
     const dataFromLocalStorage = localStorage.getItem('devices');
     if (dataFromLocalStorage) {
       const parsedData = JSON.parse(dataFromLocalStorage);
@@ -123,16 +132,8 @@ export default function Home() {
     }
   }
 
-  const handleSelectDevice = (ip: string, status: string) => {
-    setSelectedDeviceIp(ip);
-    if (status === 'Online') {
-      setStatus('Online')
-    } else {
-      setStatus('Offline')
-    }
-  }
-
-  const handleBrightnessChange = (value: number) => {
+  //set brightness value
+  const setBrightnessChange = (value: number) => {
     setBrightness(value);
   }
 
@@ -149,7 +150,7 @@ export default function Home() {
             </button>
           </div>
           <div>
-            <button className='relative bg-sky-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
+            <button className='relative bg-yellow-500 rounded-full w-20 h-20 hover:bg-blue-500 transition-colors focus:ring-4 focus:ring-cyan-700' onClick={(event) => getButtonColorFromClass(event.currentTarget.className)}>
               <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 transition-opacity hover:opacity-100'>
                 <BsLightbulb size={40} />
               </div>
@@ -178,7 +179,7 @@ export default function Home() {
           </div>
           <Button selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
           <div className='col-span-6 w-4/6'>
-            <Slidebar minValue={0} maxValue={100} step={1} value={brightness} onChange={handleBrightnessChange} />
+            <Slidebar minValue={0} maxValue={100} step={1} value={brightness} onChange={setBrightnessChange} />
           </div>
         </div>
         <div className='bg-cyan-900 w-1/5 h-1/2 rounded-3xl shadow-2xl flex flex-col'>
@@ -186,7 +187,7 @@ export default function Home() {
             Device/Launch
           </div>
           <div className='bg-cyan-800 w-full h-4/6 flex flex-col px-6 py-16 gap-y-9 mt-20 rounded-3xl shadow-2xl'>
-            <button className='bg-cyan-900 w-full h-20 rounded-lg shadow-lg flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={handleLoadData}>
+            <button className='bg-cyan-900 w-full h-20 rounded-lg shadow-lg flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={loadSelectButtonDataSet}>
               Select
               <BsDeviceSsd className='ml-5' />
             </button>
@@ -209,7 +210,7 @@ export default function Home() {
                 </div>
               </div>
             )}
-            <button className='bg-cyan-900 w-full h-20 rounded-lg shadow-lg flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={handleSendButton}>
+            <button className='bg-cyan-900 w-full h-20 rounded-lg shadow-lg flex items-center justify-center text-3xl text-center hover:bg-blue-500 transition-colors hover:text-4xl' onClick={sendData}>
               Send
               <BiSend className='ml-5' />
             </button>
