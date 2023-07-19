@@ -37,10 +37,8 @@ export default function handler(
 // Funktion zum Senden der Daten an den Nodemcu-Webserver
 async function sendDataToNodeMCU(data: ledData) {
     const nodeMCUUrl = `http://${data.selectedIP}/post`;
-
     try {
         const response = await axios.post(nodeMCUUrl, data);
-        console.log('Antwort vom Nodemcu:', response.data);
     } catch (error) {
         console.log('Fehler beim Senden der Daten an den Nodemcu:');
     }

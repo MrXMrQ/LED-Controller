@@ -78,7 +78,6 @@ export default function Home() {
       if(buttonColor === '') {
         hexToRGB(selectedColor, data)
       }
-      console.log(data)
       fetch('/api/postData', {
         method: 'POST',
         headers: {
